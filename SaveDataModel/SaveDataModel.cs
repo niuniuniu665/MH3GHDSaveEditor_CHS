@@ -124,7 +124,7 @@ namespace MH3GHDSaveEditor.SaveDataModel
         /// <summary>
         /// 道具箱容量
         /// </summary>
-        private const int ItemBoxMaxinum = 1000;
+        public const int ItemBoxMaxinum = 1000;
 
         /// <summary>
         /// 道具
@@ -135,6 +135,11 @@ namespace MH3GHDSaveEditor.SaveDataModel
         /// 装备
         /// </summary>
         public EquipData[] equips = new EquipData[ItemBoxMaxinum];
+
+        /// <summary>
+        /// 装备套装
+        /// </summary>
+        public EquipSet[] equipSetList = new EquipSet[EquipSet.EquipSetCount];
 
         /// <summary>
         /// 数据地址偏移量
@@ -154,6 +159,11 @@ namespace MH3GHDSaveEditor.SaveDataModel
                 {
                     items[i] = new Item();
                     equips[i] = new EquipData();
+                }
+
+                for (int i = 0; i < EquipSet.EquipSetCount; i++)
+                {
+                    equipSetList[i] = new EquipSet();
                 }
             }
             else
@@ -178,8 +188,21 @@ namespace MH3GHDSaveEditor.SaveDataModel
                     {
                         ListRow = i + 1
                     };
-                    equips[i].SetEquipData(SaveData.AsSpan(AddressOffset.CharacterEquipOffset + i * EquipData.EquipDataSize, EquipData.EquipDataSize).ToArray());
+                    equips[i].SetEquipData(
+                        SaveData.AsSpan(
+                            AddressOffset.CharacterEquipOffset + i * EquipData.EquipDataSize, 
+                            EquipData.EquipDataSize).ToArray());
                     
+                }
+
+                // EquipSet
+                for (int i = 0; i < EquipSet.EquipSetCount; i++)
+                {
+                    equipSetList[i] = new EquipSet();
+                    equipSetList[i].SetEquipSetData(
+                        SaveData.AsSpan(
+                            AddressOffset.CharacterEquipSetOffset + i * EquipSet.EquipSetDataSize,
+                            EquipSet.EquipSetDataSize).ToArray());
                 }
             }
         }
@@ -189,6 +212,9 @@ namespace MH3GHDSaveEditor.SaveDataModel
             AddressOffset = new AddressOffset();
         }
 
+        /// <summary>
+        /// 保存数据至存档
+        /// </summary>
         public void Save2DataBytes()
         {
             for (int i = 0; i < ItemBoxMaxinum; i++)
@@ -198,6 +224,14 @@ namespace MH3GHDSaveEditor.SaveDataModel
                 Buffer.BlockCopy(equips[i].GetEquipData(), 0, _saveData, 
                     AddressOffset.CharacterEquipOffset + i * EquipData.EquipDataSize, EquipData.EquipDataSize);
             }
+
+            // EquipSet
+            for (int i = 0; i < EquipSet.EquipSetCount; i++)
+            {
+                Buffer.BlockCopy(equipSetList[i].GetEquipSetData(), 0, _saveData,
+                    AddressOffset.CharacterEquipSetOffset + i * EquipSet.EquipSetDataSize, EquipSet.EquipSetDataSize);
+            }
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

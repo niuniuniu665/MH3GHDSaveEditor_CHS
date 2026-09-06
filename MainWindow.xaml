@@ -45,6 +45,9 @@
                 <TabItem Header="装备箱修改" IsEnabled="{Binding IsReadSaveData}">
                     <Frame Source="/Pages/EquipEdit/EquipEditPage.xaml" />
                 </TabItem>
+                <TabItem Header="装备套装编辑" IsEnabled="{Binding IsReadSaveData}">
+                    <Frame Source="/Pages/EquipSetEdit/EquipSetEditPage.xaml" />
+                </TabItem>
             </TabControl>
 
         </Grid>

@@ -45,6 +45,11 @@ namespace MH3GHDSaveEditor.SaveDataModel
         public Int32 CharacterEquipOffset { get; set; }
 
         /// <summary>
+        /// 角色装备套装地址偏移量
+        /// </summary>
+        public Int32 CharacterEquipSetOffset { get; set; }
+
+        /// <summary>
         /// 存档大小（B）
         /// </summary>
         public Int32 SaveDataSize { get; set; }

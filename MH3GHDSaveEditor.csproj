@@ -109,12 +109,16 @@
     <Compile Include="Pages\EquipEdit\EquipEditPage.xaml.cs">
       <DependentUpon>EquipEditPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EquipSetEdit\EquipSetEditPage.xaml.cs">
+      <DependentUpon>EquipSetEditPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ItemEdit\ItemEditPage.xaml.cs">
       <DependentUpon>ItemEditPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SaveDataModel\AddressOffset.cs" />
     <Compile Include="SaveDataModel\Equip\EquipData.cs" />
     <Compile Include="SaveDataModel\Equip\EquipDataEnums.cs" />
+    <Compile Include="SaveDataModel\Equip\EquipSet.cs" />
     <Compile Include="SaveDataModel\IdNamePair.cs" />
     <Compile Include="SaveDataModel\Item.cs" />
     <Compile Include="SaveDataModel\SaveDataModel.cs" />
@@ -132,6 +136,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\EquipEdit\EquipEditPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EquipSetEdit\EquipSetEditPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

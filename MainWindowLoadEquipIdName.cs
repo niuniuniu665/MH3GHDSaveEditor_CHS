@@ -37,7 +37,7 @@ namespace MH3GHDSaveEditor
         public ObservableCollection<IdNamePair> ItemList { get => itemList; }
         
         /// <summary>
-        /// 道具字典
+        /// 装备类型字典
         /// </summary>
         public Dictionary<UInt32, string> EquipTypeDict;
         public ObservableCollection<IdNamePair> equipTypeList;
