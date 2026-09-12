@@ -256,18 +256,13 @@ namespace MH3GHDSaveEditor.Pages.EquipSetEdit
         }
 
         /// <summary>
-        /// 装饰珠ID偏移
-        /// </summary>
-        public const uint DecorationIdOffset = 1111;
-
-        /// <summary>
         /// 装饰珠1名称
         /// </summary>
         public string Decoration1Name
         {
             get
             {
-                return MainWindow.Instance.ItemDict.TryGetValue(_decoration1 + DecorationIdOffset, out string name) == true ? name : string.Empty;
+                return MainWindow.Instance.DecorationDict.TryGetValue(_decoration1, out string name) == true ? name : string.Empty;
             }
         }
 
@@ -278,7 +273,7 @@ namespace MH3GHDSaveEditor.Pages.EquipSetEdit
         {
             get
             {
-                return MainWindow.Instance.ItemDict.TryGetValue(_decoration2 + DecorationIdOffset, out string name) == true ? name : string.Empty;
+                return MainWindow.Instance.DecorationDict.TryGetValue(_decoration2, out string name) == true ? name : string.Empty;
             }
         }
 
@@ -289,7 +284,7 @@ namespace MH3GHDSaveEditor.Pages.EquipSetEdit
         {
             get
             {
-                return MainWindow.Instance.ItemDict.TryGetValue(_decoration3 + DecorationIdOffset, out string name) == true ? name : string.Empty;
+                return MainWindow.Instance.DecorationDict.TryGetValue(_decoration3, out string name) == true ? name : string.Empty;
             }
         }
 

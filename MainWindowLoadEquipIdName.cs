@@ -35,7 +35,14 @@ namespace MH3GHDSaveEditor
         public Dictionary<UInt32, string> ItemDict;
         public ObservableCollection<IdNamePair> itemList;
         public ObservableCollection<IdNamePair> ItemList { get => itemList; }
-        
+
+        /// <summary>
+        /// 装饰珠字典
+        /// </summary>
+        public Dictionary<UInt32, string> DecorationDict;
+        public ObservableCollection<IdNamePair> decorationList;
+        public ObservableCollection<IdNamePair> DecorationList { get => decorationList; }
+
         /// <summary>
         /// 装备类型字典
         /// </summary>
@@ -104,6 +111,7 @@ namespace MH3GHDSaveEditor
         /// </summary>
         private void LoadEquipIdName()
         {
+            /* 读取装备类型 */ 
             string filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "data", "EquipType.json");
 
             if (File.Exists(filePath))
@@ -115,6 +123,7 @@ namespace MH3GHDSaveEditor
                 MessageBox.Show($"找不到文件{filePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+            /* 读取技能列表 */
             filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "data", "Skills.json");
 
             if (File.Exists(filePath))
@@ -126,6 +135,7 @@ namespace MH3GHDSaveEditor
                 MessageBox.Show($"找不到文件{filePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+            /* 读取道具列表 */
             filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "data", "Item.json");
 
             if (File.Exists(filePath))
@@ -136,7 +146,20 @@ namespace MH3GHDSaveEditor
             {
                 MessageBox.Show($"找不到文件{filePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            
+            /* 读取装饰珠列表 */
+            filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "data", "Decorations.json");
 
+            if (File.Exists(filePath))
+            {
+                LoadEquipIdNameSingle(filePath, out DecorationDict, out decorationList);
+            }
+            else
+            {
+                MessageBox.Show($"找不到文件{filePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            /* 读取全部装备 */
             for (EquipType i = EquipType.Body; i < EquipType.Count; i++)
             {
                 if (equipDataFileNames.TryGetValue(i, out string fileName))
