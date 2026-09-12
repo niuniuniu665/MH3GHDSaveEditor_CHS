@@ -22,15 +22,40 @@
                 </Grid.ColumnDefinitions>
                 <DataGrid
                     x:Name="EquipSetNameDataGrid"
-                    AlternatingRowBackground="AliceBlue"
                     AlternationCount="2"
                     AutoGenerateColumns="False"
-                    CanUserAddRows="True"
-                    CanUserDeleteRows="True"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
                     CanUserResizeColumns="True"
                     GridLinesVisibility="All"
                     HeadersVisibility="Column"
-                    SelectionChanged="EquipSetNameDataGrid_SelectionChanged">
+                    HorizontalGridLinesBrush="{DynamicResource MaterialDesignDivider}"
+                    SelectionChanged="EquipSetNameDataGrid_SelectionChanged"
+                    VerticalGridLinesBrush="{DynamicResource MaterialDesignDivider}">
+                    <DataGrid.RowStyle>
+                        <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+
+                            <!--  普通行  -->
+                            <Setter Property="Background" Value="{DynamicResource DataGridRowBackgroundBrush}" />
+
+                            <Style.Triggers>
+                                <!--  交替行  -->
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="{DynamicResource DataGridAlternatingRowBackgroundBrush}" />
+                                </Trigger>
+
+                                <!--  悬停：写在交替行 Trigger 之后，就会覆盖它  -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#22000000" />
+                                </Trigger>
+
+                                <!--  选中：优先级最高  -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#44000000" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
 
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Width="*" Header="套装名称">
@@ -55,14 +80,40 @@
                 <Grid Grid.Column="1">
                     <DataGrid
                         x:Name="EquipSlotsDataGrid"
-                        AlternatingRowBackground="AliceBlue"
                         AlternationCount="2"
                         AutoGenerateColumns="False"
                         CanUserAddRows="False"
                         CanUserDeleteRows="False"
+                        CanUserResizeColumns="True"
                         GridLinesVisibility="All"
                         HeadersVisibility="Column"
-                        ItemsSource="{Binding ElementName=EquipSetEditRoot, Path=equipSetSlotInfo}">
+                        HorizontalGridLinesBrush="{DynamicResource MaterialDesignDivider}"
+                        ItemsSource="{Binding ElementName=EquipSetEditRoot, Path=equipSetSlotInfo}"
+                        VerticalGridLinesBrush="{DynamicResource MaterialDesignDivider}">
+                        <DataGrid.RowStyle>
+                            <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+
+                                <!--  普通行  -->
+                                <Setter Property="Background" Value="{DynamicResource DataGridRowBackgroundBrush}" />
+
+                                <Style.Triggers>
+                                    <!--  交替行  -->
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="{DynamicResource DataGridAlternatingRowBackgroundBrush}" />
+                                    </Trigger>
+
+                                    <!--  悬停：写在交替行 Trigger 之后，就会覆盖它  -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#22000000" />
+                                    </Trigger>
+
+                                    <!--  选中：优先级最高  -->
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#44000000" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
 
                         <DataGrid.Columns>
                             <DataGridTextColumn

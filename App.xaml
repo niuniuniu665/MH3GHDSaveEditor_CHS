@@ -9,12 +9,16 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:CustomColorTheme
-                    BaseTheme="Light"
+                    BaseTheme="Inherit"
                     PrimaryColor="#FF00688B"
                     SecondaryColor="Lime" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="DataGridRowBackgroundBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="DataGridAlternatingRowBackgroundBrush" Color="#F5F5F5" />
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

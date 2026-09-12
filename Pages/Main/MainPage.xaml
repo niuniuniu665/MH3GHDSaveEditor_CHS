@@ -32,6 +32,7 @@
             <TextBox
                 x:Name="CharacterName"
                 Grid.Column="1"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="{Binding Name, Mode=TwoWay}" />
 
             <Label Grid.Row="1">性别</Label>
@@ -39,6 +40,7 @@
                 x:Name="CharacterSex"
                 Grid.Row="1"
                 Grid.Column="1"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 SelectedIndex="{Binding Sex, Mode=TwoWay}">
                 <ComboBoxItem Content="男" />
                 <ComboBoxItem Content="女" />
@@ -49,6 +51,7 @@
                 x:Name="CharacterZenny"
                 Grid.Row="2"
                 Grid.Column="1"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="{Binding Zenny, Mode=TwoWay}" />
 
             <Label Grid.Row="3">资源点数</Label>
@@ -56,6 +59,7 @@
                 x:Name="CharacterPoint"
                 Grid.Row="3"
                 Grid.Column="1"
+                Foreground="{DynamicResource MaterialDesignBody}"
                 Text="{Binding Point, Mode=TwoWay}" />
 
             <Button

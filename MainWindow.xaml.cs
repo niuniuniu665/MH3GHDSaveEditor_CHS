@@ -1,4 +1,5 @@
-﻿using MH3GHDSaveEditor.Common;
+﻿using MaterialDesignThemes.Wpf;
+using MH3GHDSaveEditor.Common;
 using MH3GHDSaveEditor.SaveDataModel;
 using MH3GHDSaveEditor.SaveDataModel.Equip;
 using Newtonsoft.Json;
@@ -37,6 +38,8 @@ namespace MH3GHDSaveEditor
         /// </summary>
         public string PageTitle { get; set; } = string.Empty;
 
+        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
+
         private bool _isReadSaveData = false;
         /// <summary>
         /// 是否已经读取了存档
@@ -67,6 +70,16 @@ namespace MH3GHDSaveEditor
         public MainWindow()
         {
             InitializeComponent();
+
+            SystemParameters.StaticPropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(SystemParameters.HighContrast) ||
+                    e.PropertyName == "WindowGlassColor") // 系统主题相关
+                {
+                    UpdateDataGridBrushes();
+                }
+            };
+
             Instance = this;
             this.DataContext = this;
 
@@ -86,6 +99,53 @@ namespace MH3GHDSaveEditor
             {
                 snackbar.MessageQueue.Enqueue(message);
             }
+        }
+        private void UpdatePrimaryColorCheckState(Color color)
+        {
+            foreach (var obj in PrimaryColorMenu.Items)
+            {
+                if (obj is MenuItem item && item.Tag is string hex)
+                {
+                    var c = (Color)ColorConverter.ConvertFromString(hex);
+                    item.IsChecked = (c == color);
+                }
+            }
+        }
+        private void UpdateDataGridBrushes()
+        {
+            var theme = _paletteHelper.GetTheme();
+            bool isDark = theme.GetBaseTheme() == BaseTheme.Dark;
+
+            // 深色主题：交替行比背景略亮一点
+            // 浅色主题：交替行比背景略暗一点
+            var altColor = isDark
+                ? Color.FromRgb(0x32, 0x32, 0x32)
+                : Color.FromRgb(0xF5, 0xF5, 0xF5);
+
+            var normalColor = isDark
+                ? Color.FromRgb(0x1E, 0x1E, 0x1E)
+                : Colors.White;
+
+            Application.Current.Resources["DataGridRowBackgroundBrush"] =
+                new SolidColorBrush(normalColor);
+
+            Application.Current.Resources["DataGridAlternatingRowBackgroundBrush"] =
+                new SolidColorBrush(altColor);
+        }
+
+        private void ApplyPrimaryColor(Color color)
+        {
+            var theme = _paletteHelper.GetTheme();
+            theme.SetPrimaryColor(color);
+            _paletteHelper.SetTheme(theme);
+
+            UpdatePrimaryColorCheckState(color);
+
+            UpdateDataGridBrushes();
+
+            // 持久化
+            Properties.Settings.Default.PrimaryColor = color.ToString();
+            Properties.Settings.Default.Save();
         }
 
         /// <summary>

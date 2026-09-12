@@ -7,12 +7,74 @@
     xmlns:local="clr-namespace:MH3GHDSaveEditor"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     Width="800"
     Height="450"
     Closing="Window_Closing"
+    Loaded="MainWindow_Loaded"
+    WindowStyle="None"
     mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="0"
+            CornerRadius="0"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="6"
+            UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <cv:TitleConverter x:Key="TitleConverter" />
+
+        <!--  普通标题栏按钮样式  -->
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#33000000" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#55000000" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  关闭按钮样式（悬停变红）  -->
+        <Style
+            x:Key="CloseButtonStyle"
+            BasedOn="{StaticResource CaptionButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E81123" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F1707A" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Window.Title>
         <Binding
@@ -20,22 +82,149 @@
             Mode="OneTime"
             Path="PageTitle" />
     </Window.Title>
+    <Window.Background>
+        <DynamicResource ResourceKey="MaterialDesignBackground" />
+    </Window.Background>
     <Grid>
         <materialDesign:Snackbar x:Name="snackbar" MessageQueue="{materialDesign:MessageQueue}" />
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="32" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Menu BorderBrush="Gray" BorderThickness="0,0,0,1">
+
+            <!--  ===== 自绘标题栏 =====  -->
+            <Grid
+                Grid.Row="0"
+                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                MouseMove="TitleBar_MouseMove">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Column="0"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource MaterialDesignBody}"
+                    Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button
+                        Click="Minimize_Click"
+                        Style="{StaticResource CaptionButtonStyle}"
+                        ToolTip="最小化">
+                        <materialDesign:PackIcon
+                            Width="12"
+                            Height="12"
+                            Kind="WindowMinimize" />
+                    </Button>
+                    <Button
+                        Click="MaximizeRestore_Click"
+                        Style="{StaticResource CaptionButtonStyle}"
+                        ToolTip="最大化/还原">
+                        <materialDesign:PackIcon
+                            x:Name="MaxIcon"
+                            Width="12"
+                            Height="12"
+                            Kind="WindowMaximize" />
+                    </Button>
+                    <Button
+                        Click="Close_Click"
+                        Style="{StaticResource CloseButtonStyle}"
+                        ToolTip="关闭">
+                        <materialDesign:PackIcon
+                            Width="12"
+                            Height="12"
+                            Kind="Close" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Menu
+                Grid.Row="1"
+                BorderBrush="Gray"
+                BorderThickness="0,0,0,1">
                 <MenuItem Header="设置">
                     <CheckBox
                         Click="AutoBackupCheckBox_Click"
                         Content="自动保存存档备份"
                         Initialized="AutoBackupCheckBox_Initialized" />
                 </MenuItem>
+
+                <MenuItem Header="主题">
+                    <MenuItem
+                        x:Name="SystemThemeMenuItem"
+                        Click="SystemThemeMenuItem_Click"
+                        Header="跟随系统"
+                        IsCheckable="True" />
+                    <Separator />
+                    <MenuItem
+                        x:Name="LightThemeMenuItem"
+                        Click="LightThemeMenuItem_Click"
+                        Header="白天模式"
+                        IsCheckable="True" />
+                    <MenuItem
+                        x:Name="DarkThemeMenuItem"
+                        Click="DarkThemeMenuItem_Click"
+                        Header="夜间模式"
+                        IsCheckable="True" />
+                </MenuItem>
+
+                <!--  新增：主色  -->
+                <MenuItem x:Name="PrimaryColorMenu" Header="主色">
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="深紫"
+                        IsCheckable="True"
+                        Tag="#673AB7" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="靛蓝"
+                        IsCheckable="True"
+                        Tag="#3F51B5" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="蓝色"
+                        IsCheckable="True"
+                        Tag="#2196F3" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="青色"
+                        IsCheckable="True"
+                        Tag="#009688" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="绿色"
+                        IsCheckable="True"
+                        Tag="#4CAF50" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="橙色"
+                        IsCheckable="True"
+                        Tag="#FF9800" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="红色"
+                        IsCheckable="True"
+                        Tag="#F44336" />
+                    <MenuItem
+                        Click="PrimaryColor_Click"
+                        Header="粉色"
+                        IsCheckable="True"
+                        Tag="#E91E63" />
+
+                    <Separator />
+
+                    <MenuItem Click="PrimaryColorCustom_Click" Header="自定义颜色…" />
+                </MenuItem>
+
             </Menu>
-            <TabControl Grid.Row="1" TabStripPlacement="Left">
+
+            <TabControl Grid.Row="2" TabStripPlacement="Left">
                 <TabItem Header="角色信息">
                     <Frame Source="/Pages/Main/MainPage.xaml" />
                 </TabItem>
